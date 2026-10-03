@@ -28,3 +28,5 @@ Wie hoch war die durchschnittliche Temperatur?
 Welcher Sensor hatte am 3.10. die höchste Temperatur?
 
 Gab es zwischen 6 und 9 Uhr ungewöhnliche Temperaturen?
+
+Gab es zwischen 6 und 9 Uhr ungewöhnliche Temperaturen? am 2.10.2026 am sensor boiler oben?
