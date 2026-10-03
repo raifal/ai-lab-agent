@@ -74,7 +74,7 @@ sage das offen.
 
     while True:
 
-        client = ollama.Client( host="http://localhost:11434" )
+        client = ollama.Client( host="http://ollama:11434" )
         response = client.chat(
             model="qwen2.5:3b",
             messages=messages,
