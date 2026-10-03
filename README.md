@@ -1,5 +1,8 @@
 # Setup ai-lab-agent
 
+ssh-keygen -t ed25519 -C "raifal@users.noreply.github.com"
+cat /root/.ssh/id_ed25519.pub
+
 pip install ollama psycopg2-binary
 pip install pydantic
 pip install python-dotenv
