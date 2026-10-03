@@ -1,8 +1,7 @@
 import json
 import ollama
 
-from database import query_temperature_data
-
+from database import query_temperature_data, analyze_temperature
 
 TOOLS = [
     {
@@ -10,9 +9,9 @@ TOOLS = [
         "function": {
             "name": "query_temperature_data",
             "description": (
-                "Liest Temperaturmesswerte aus der Heizungsdatenbank. "
-                "Verwende das Tool, wenn konkrete Temperaturdaten "
-                "für einen bestimmten Zeitraum benötigt werden."
+                "Liest einzelne Temperaturmesswerte aus der "
+                "Heizungsdatenbank. Verwende dieses Tool, wenn "
+                "konkrete Messwerte und Zeitpunkte benötigt werden."
             ),
             "parameters": {
                 "type": "object",
@@ -35,7 +34,71 @@ TOOLS = [
                 "required": ["start", "end"],
             },
         },
-    }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "analyze_temperature",
+            "description": (
+                "Analysiert Temperaturmesswerte eines bestimmten "
+                "Sensors innerhalb eines Zeitraums. Verwende dieses "
+                "Tool für Fragen nach minimaler, maximaler oder "
+                "durchschnittlicher Temperatur. "
+                "Für minimale und maximale Temperatur gleichzeitig "
+                "verwende die Operation 'min_max'."
+            ),
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "start": {
+                        "type": "string",
+                        "description": (
+                            "Startzeit im Format "
+                            "YYYY-MM-DD HH:MM:SS"
+                        ),
+                    },
+                    "end": {
+                        "type": "string",
+                        "description": (
+                            "Endzeit im Format "
+                            "YYYY-MM-DD HH:MM:SS"
+                        ),
+                    },
+                    "sensor": {
+                        "type": "string",
+                        "description": (
+                            "Name des Sensors, zum Beispiel "
+                            "'Boiler oben', 'Boiler unten', "
+                            "'Heizung VL' oder 'Warmwasser VL'."
+                        ),
+                    },
+                    "operation": {
+                        "type": "string",
+                        "enum": [
+                            "min",
+                            "max",
+                            "min_max",
+                            "average"
+                        ],
+                        "description": (
+                            "Art der Analyse: "
+                            "'min' für minimale Temperatur, "
+                            "'max' für maximale Temperatur, "
+                            "'min_max' für minimale und maximale "
+                            "Temperatur und "
+                            "'average' für Durchschnittstemperatur."
+                        ),
+                    },
+                },
+                "required": [
+                    "start",
+                    "end",
+                    "sensor",
+                    "operation",
+                ],
+            },
+        },
+    },
 ]
 
 
@@ -45,6 +108,13 @@ def execute_tool(tool_name, arguments):
             arguments["start"],
             arguments["end"],
         )
+    if tool_name == "analyze_temperature":
+        return analyze_temperature(
+            arguments["start"],
+            arguments["end"],
+            arguments["sensor"],
+            arguments["operation"],
+        )    
 
     raise ValueError(f"Unbekanntes Tool: {tool_name}")
 
@@ -113,10 +183,31 @@ sage das offen.
             )
 
 if __name__ == "__main__":
-
-    question = input("> ")
-
-    answer = ask_agent(question)
-
+    print("Heizungs-Agent gestartet.")
+    print("Beenden mit 'exit', 'quit' oder Strg+C.")
     print()
-    print(answer)                
+
+    while True:
+        try:
+            question = input("> ").strip()
+
+            if not question:
+                continue
+
+            if question.lower() in ["exit", "quit"]:
+                print("Agent beendet.")
+                break
+
+            answer = ask_agent(question)
+
+            print()
+            print(answer)
+            print()
+
+        except KeyboardInterrupt:
+            print("\nAgent beendet.")
+            break
+
+        except Exception as e:
+            print(f"Fehler: {e}")
+             
