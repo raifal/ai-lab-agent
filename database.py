@@ -28,6 +28,7 @@ def query_temperature_data(start, end):
                   ON s."sensorAddress" = t.sensor_address
                 WHERE t.timestamp >= %s
                   AND t.timestamp <= %s
+                  AND s.active is TRUE
                 ORDER BY t.timestamp
                 """,
                 (start, end),
