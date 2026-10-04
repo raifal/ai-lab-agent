@@ -236,6 +236,7 @@ WICHTIG:
   ALTER- oder CREATE-Befehle.
 - Verwende nur aktive sensoren mit active is true
 - "sensorAddress" muss immer in quotes gesetzt werden.
+- Frage immer vorher die namen der sensoren mit einem separaten SQL ab, und verwende nur gefundene ergebnisse.
 Datenbankschema:
 
 Tabelle public.sensors:
